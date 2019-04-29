@@ -1,3 +1,5 @@
+import random
+import np
 # Capacidad de la bodega
 CB = 475
 
@@ -24,7 +26,7 @@ CBA = 3.3
 CC = None  # REVISAR!!
 
 # Pedidos
-delta = {}
+delta = {str(e): None for e in range(0, 31)}  # CAMBIAR!!
 
 # Costo arriendo
 gamma = 800000
@@ -35,21 +37,26 @@ sigma = {"pv1": {}, "pv2": {}}
 # Volumen desechado
 beta = 0.015
 
-# Costo de produccion
-# ES NECESARIO???
-
 # Costo uso maquina
 theta = {"skin": 84964, "troqueladora": 60525, "selladora": 70960}
 
-# Materia prima por producto en unidades de plancha de plastico
-MP = {"blister": {"rigido 200": 0}, "skin": {
-    "flexible 150": 0.17}, "electonico": {"rigido 150": 0}}  # HAY QUE CALCULARLO
+# Precio venta productos
+eta = {"skin": 0, "blister": 0, "electronico": 0, "regulador": 0}  # CAMBIAR
 
 # Costo extraccion basura
 xi = 60000
 
 # Volumen producto
-V = {}
+V = {"skin": 0, "blister": 0, "electronico": 0,
+     "regulador": 0}  # CAMBIAR VALORES
 
 # Volumen materia prima
 v = {"flexible 150": 0, "rigido 150": 0, "rigido 200": 0}
+
+# Materia prima por producto en unidades de plancha de plastico
+MP = {"blister": {"rigido 200": 0}, "skin": {
+    "flexible 150": 0.17}, "electonico": {"rigido 150": 0}}  # HAY QUE CALCULARLO
+
+# Costo materia prima
+mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0},
+      "pv2": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0}} # CAMBIAR
