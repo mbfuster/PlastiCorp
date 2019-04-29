@@ -1,5 +1,3 @@
-import random
-import np
 # Capacidad de la bodega
 CB = 475
 
