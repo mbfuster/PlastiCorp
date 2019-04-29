@@ -11,7 +11,7 @@ Y = model.addVars(M, D, vtype=GRB.BINARY, name="Y")
 Z = model.addVars(D, vtype=GRB.BINARY, name="D")
 F = model.addVars(J, P, D, vtype=GRB.INTEGER, name="F")
 H = model.addVars(I, D, vtype=GRB.INTEGER, name="H")
-Q = model.addVars(I, D, vtype=GRB.INTEGER, name="Q")
+Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q")
 S = model.addVars(K, D, vtype=GRB.BINARY, name="S")  # W_k_d en el modelo
 
 # Llama a update para agregar las variables al modelo
@@ -66,4 +66,6 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
 #                  for d in D[1:]
 # if (i, j) in MP)  # Revisar si no genera error por no definir i
 
-# No se puede superar la capacidad del camion
+# No se puede superar la capacidad de la bodega
+model.addConstrs(quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] for j in J) <= CB
+                 for d in D)

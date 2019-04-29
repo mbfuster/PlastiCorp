@@ -56,8 +56,8 @@ MP = {("blister", "rigido 200"): 0, ("skin", "flexible 150"): 0.17,
       ("electonico", "rigido 150"): 0}  # HAY QUE CALCULARLO
 
 # Costo materia prima
-mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0},
-      "pv2": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0}}  # CAMBIAR
+mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0},
+      "pv2": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0}}  # CAMBIAR
 
 # Presupuesto inicial
 PR = 0

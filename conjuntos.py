@@ -2,7 +2,7 @@
 I = ["skin", "blister", "electronico", "regulador"]
 
 # Recursos
-J = ["rigido 200", "rigido 150", "flexibe 150"]
+J = ["rigido 200", "rigido 150", "flexible 150"]
 
 # Trabajadores
 K = ["chery", "fontus", "marcelin", "miranda", "pierre", "philomene",
