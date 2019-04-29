@@ -67,5 +67,19 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
 # if (i, j) in MP)  # Revisar si no genera error por no definir i
 
 # No se puede superar la capacidad de la bodega
-model.addConstrs(quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] for j in J) <= CB
-                 for d in D)
+model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] for j in J) <= CB
+                  for d in D), name="bodega")
+
+# Si el contenedor de basura está lleno se debe llamar a camión recolector
+# de basura para que retire el material
+
+
+# Minimo trabajadores nacionales
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[:6]) >= 2)
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[6:11]) >= 2)
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[11:16]) >= 2)
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[16:]) >= 2)
