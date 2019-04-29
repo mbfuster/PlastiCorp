@@ -15,7 +15,7 @@ P = ["pv1", "pv2"]
 M = ["skin", "troqueladora", "selladora"]
 
 # Dias
-D = [str(i) for i in range(1, 21)]
+D = [i for i in range(1, 21)]
 
 # Clientes
 C = ["imp", "sfr", "viso", "ball"]

@@ -24,7 +24,7 @@ CBA = 3.3
 CC = None  # REVISAR!!
 
 # Pedidos
-delta = {str(e): None for e in range(0, 31)}  # CAMBIAR!!
+delta = {("cliente", "producto", "dia"): 0}  # CAMBIAR!!
 
 # Costo arriendo
 gamma = 800000
@@ -57,4 +57,7 @@ MP = {"blister": {"rigido 200": 0}, "skin": {
 
 # Costo materia prima
 mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0},
-      "pv2": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0}} # CAMBIAR
+      "pv2": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0}}  # CAMBIAR
+
+# Presupuesto inicial
+PR = 0
