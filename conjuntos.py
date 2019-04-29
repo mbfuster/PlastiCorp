@@ -25,5 +25,8 @@ L = {"blister": ("skin", "troqueladora", "selladora",
                  "relleno", "etiquetado", "envasado"),
      "skin": ("skin", "toqueladora", "etiquetado", "envasado"),
      "electronico": ("skin", "selladora", "desgajado", "etiquetado",
-                     "envasado")
+                     "envasado"),
      "regulador": ("skin", "selladora", "envasado")}
+
+# Conjunto de pedidos
+E = [str(e) for e in range (0,31)]
