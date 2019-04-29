@@ -52,8 +52,8 @@ V = {"skin": 0, "blister": 0, "electronico": 0,
 v = {"flexible 150": 0, "rigido 150": 0, "rigido 200": 0}
 
 # Materia prima por producto en unidades de plancha de plastico
-MP = {"blister": {"rigido 200": 0}, "skin": {
-    "flexible 150": 0.17}, "electonico": {"rigido 150": 0}}  # HAY QUE CALCULARLO
+MP = {("blister", "rigido 200"): 0, ("skin", "flexible 150"): 0.17,
+      ("electonico", "rigido 150"): 0}  # HAY QUE CALCULARLO
 
 # Costo materia prima
 mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexibe 150": 0},
