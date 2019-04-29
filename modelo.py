@@ -83,3 +83,13 @@ model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[11:16]) >= 2)
 model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[16:]) >= 2)
+
+# Minimo trabajadoras mujeres
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[:6]) >= 3)
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[6:11]) >= 3)
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[11:16]) >= 3)
+model.addConstr(
+    quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:]) >= 3)
