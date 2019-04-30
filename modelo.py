@@ -119,11 +119,9 @@ model.addConstr(
 
 obj = quicksum(quicksum(quicksum(Y[m, h, d]*theta[m]
                                  for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] for k in K)for d in D) +\
-    quicksum(Z[d]*xi for d in D) + gamma
+    quicksum(Z[d]*xi for d in D) + gamma + \
+    quicksum(quicksum(quicksum(mu[p][j]*F[j, p, d] for p in P)for j in J)for d in D)
 
-
-obj2 = quicksum(quicksum(mu[p, j] for p in P)for j in J)
-# model.setObjective(obj, GRB.MINIMIZE)
-
+model.setObjective(obj, GRB.MINIMIZE)
 model.optimize()
-# model.printAttr("X")
+model.printAttr("X")
