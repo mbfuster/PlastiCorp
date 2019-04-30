@@ -71,4 +71,4 @@ mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0},
       "pv2": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0}}  # CAMBIAR
 
 # Presupuesto inicial
-PR = 0
+PR = 300

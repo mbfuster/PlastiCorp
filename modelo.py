@@ -27,14 +27,14 @@ print("8")
 # Llama a update para agregar las variables al modelo
 model.update()
 
-model.setObjective(obj, GRB.MINIMIZE)
+
 # Restricciones
 
 # 1. No superar presupuesto
-model.addConstr(quicksum(quicksum((quicksum(Y[m, h, d] * theta[m])for m in M)
-                                  + (quicksum(S[k, d] * t[k]["sueldo"])
-                                     for k in K)+(Z[d] * xi) + gamma
-                                  + (quicksum(quicksum(mu[p] * F[p, j, d])for p in P)for j in J))for h in H)for d in D <= PR)
+# model.addConstr(quicksum(quicksum(quicksum(Y[m, h, d] * theta[m]for m in M)
+#                                   + (quicksum(S[k, d] * t[k]["sueldo"]
+#                                      for k in K))+(Z[d] * xi) + gamma
+#                                   + (quicksum(quicksum(mu[p] * F[p, j, d] for p in P)for j in J))for h in H)for d in D)) <= PR)
 
 # model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
 #                  for d in D), name="presupuesto")
@@ -62,7 +62,7 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
                   if (c, d, i) not in delta), name="demanda")  # Revisar si es necesaria
 
 # 3. Se prende la maquina solo si se utiliza en el dia
-M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
+#M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
 #
 # model.addConstrs(quicksum(X[i, d] for i in I) <= M * Y[m, d]
 #                  for d in D
@@ -88,7 +88,7 @@ model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] 
 
 # 6. Si el contenedor de basura está lleno se debe llamar a camión recolector
 # de basura para que retire el material
-#M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
+# M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
 # model.addConstr(
 #    CBA - quicksum(X[i, d] + X[i, d-1] for i in I) * beta <= M * (i - Z[d]) for d in D)
 
@@ -113,11 +113,14 @@ model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:]) >= 3)
 
 # 9. Cantidad de trabajadores minima por máquina
-#model.addConstr(quicksum(Y[m, d] for m in M) * W <= quicksum(S[k, d] for k in K) for d in D)
+# model.addConstr(quicksum(Y[m, d] for m in M) * W <= quicksum(S[k, d] for k in K) for d in D)
 
 # 10. Ciclo de trabajo
 
-model.setObjective(obj, GRB.MINIMIZE)
+obj = quicksum(quicksum(quicksum(Y[m, h, d]*theta[m]
+                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] for k in K)for d in D)
+
+# model.setObjective(obj, GRB.MINIMIZE)
 
 model.optimize()
-model.printAttr("X")
+# model.printAttr("X")
