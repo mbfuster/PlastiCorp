@@ -21,8 +21,8 @@ t = {"chery": {"sueldo": 11784, "mujer": 1, "chileno": 0},
 CBA = 3.3
 
 # Capacidad camión recolector
-#CC = None  # REVISAR!!
-M = pow(10,6)
+# CC = None  # REVISAR!!
+BIGM = pow(10, 6)
 
 # Pedidos
 delta = {("imp", "skin", 1): 1412, ("Imp", "skin", 2): 897,

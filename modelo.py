@@ -5,27 +5,38 @@ from parametros import *  # Todos los parametros de la modelacio
 
 # Generacion de modelo
 model = Model("Factory Planning Plasticorp")
+print("hola")
 
 X = model.addVars(I, D, vtype=GRB.INTEGER, name="X")
-Y = model.addVars(M, H, D, vtype=GRB.BINARY, name="Y")
+print("1")
+Y = model.addVars(M, Hs, D, vtype=GRB.BINARY, name="Y")
+print("2")
 Z = model.addVars(D, vtype=GRB.BINARY, name="D")
+print("3")
 F = model.addVars(J, P, D, vtype=GRB.INTEGER, name="F")
+print("4")
 H = model.addVars(I, D, vtype=GRB.INTEGER, name="H")
+print("5")
 Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q")
+print("6")
 S = model.addVars(K, D, vtype=GRB.BINARY, name="S")  # W_k_d en el modelo
-O = model.addVars(I, E, D, H, vtype=GRB.BINARY, name="O")
+print("7")
+O = model.addVars(I, E, D, Hs, vtype=GRB.BINARY, name="O")
+print("8")
 
 # Llama a update para agregar las variables al modelo
 model.update()
 
+model.setObjective(obj, GRB.MINIMIZE)
 # Restricciones
 
 # 1. No superar presupuesto
-model.addConstr(quicksum(quicksum((quicksum(Y[m,h,d] * theta[m])for m in M)
-    + (quicksum(S[k,d] * t[k]["sueldo"])for k in K)+(Z[d] * xi) + gamma
-    + (quicksum(quicksum(mu[p] * F[p,j,d])for p in P)for j in J))for h in H)for d in D <= PR)
+model.addConstr(quicksum(quicksum((quicksum(Y[m, h, d] * theta[m])for m in M)
+                                  + (quicksum(S[k, d] * t[k]["sueldo"])
+                                     for k in K)+(Z[d] * xi) + gamma
+                                  + (quicksum(quicksum(mu[p] * F[p, j, d])for p in P)for j in J))for h in H)for d in D <= PR)
 
-#model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
+# model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
 #                  for d in D), name="presupuesto")
 
 # 2. Satisfaccion demanda y conservacion de flujo
@@ -105,6 +116,8 @@ model.addConstr(
 #model.addConstr(quicksum(Y[m, d] for m in M) * W <= quicksum(S[k, d] for k in K) for d in D)
 
 # 10. Ciclo de trabajo
+
+model.setObjective(obj, GRB.MINIMIZE)
 
 model.optimize()
 model.printAttr("X")
