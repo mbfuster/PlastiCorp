@@ -7,13 +7,13 @@ from parametros import *  # Todos los parametros de la modelacio
 model = Model("Factory Planning Plasticorp")
 
 X = model.addVars(I, D, vtype=GRB.INTEGER, name="X")
-Y = model.addVars(M, D, vtype=GRB.BINARY, name="Y")
+Y = model.addVars(M, H, D, vtype=GRB.BINARY, name="Y")
 Z = model.addVars(D, vtype=GRB.BINARY, name="D")
 F = model.addVars(J, P, D, vtype=GRB.INTEGER, name="F")
 H = model.addVars(I, D, vtype=GRB.INTEGER, name="H")
 Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q")
 S = model.addVars(K, D, vtype=GRB.BINARY, name="S")  # W_k_d en el modelo
-O = model.addVars(I, P, D, H, vtype=GRB.BINARY, name="O")
+O = model.addVars(I, E, D, H, vtype=GRB.BINARY, name="O")
 
 # Llama a update para agregar las variables al modelo
 model.update()
@@ -21,8 +21,12 @@ model.update()
 # Restricciones
 
 # 1. No superar presupuesto
-model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
-                  for d in D), name="presupuesto")
+model.addConstr(quicksum(quicksum((quicksum(Y[m][h][d] * theta[m])for m in M)
+    + (quicksum(S[k][d] * t[k]["sueldo"])for k in K)+(Z[d] * xi) + gamma
+    + (quicksum(quicksum(mu[p] * F[p][j][d])for p in P)for j in J))for h in H)for d in D <= PR)
+
+#model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
+#                  for d in D), name="presupuesto")
 
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
