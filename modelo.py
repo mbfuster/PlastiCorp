@@ -13,6 +13,7 @@ F = model.addVars(J, P, D, vtype=GRB.INTEGER, name="F")
 H = model.addVars(I, D, vtype=GRB.INTEGER, name="H")
 Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q")
 S = model.addVars(K, D, vtype=GRB.BINARY, name="S")  # W_k_d en el modelo
+O = model.addVars(I, P, D, H, vtype=GRB.BINARY, name="O")
 
 # Llama a update para agregar las variables al modelo
 model.update()
@@ -47,15 +48,15 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
-
-model.addConstrs(quicksum(X[i, d] for i in I) <= M * Y[m, d]
-                  for d in D
-                  for m in M)
+#
+# model.addConstrs(quicksum(X[i, d] for i in I) <= M * Y[m, d]
+#                  for d in D
+#                  for m in M)
 
 # 4. La cantidad de materia prima j a comprar en período d debe ser igual o
 # mayor a lo que se requiere
 
-# # Primer dia
+# Primer dia
 # model.addConstrs(quicksum(MP[i, j] * X[i, 1] for i in I) <=
 #                  quicksum(F[j, p, 1] for p in P) + Q[j, 1]
 #                  for j in J
@@ -72,9 +73,9 @@ model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] 
 
 # 6. Si el contenedor de basura está lleno se debe llamar a camión recolector
 # de basura para que retire el material
-M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
-model.addConstr(
-    CBA - quicksum(X[i,d] + X[i,d-1] for i in I) * beta <= M * (i - Z[d]) for d in D)
+#M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
+# model.addConstr(
+#    CBA - quicksum(X[i, d] + X[i, d-1] for i in I) * beta <= M * (i - Z[d]) for d in D)
 
 # 7. Minimo trabajadores nacionales
 model.addConstr(
@@ -96,7 +97,10 @@ model.addConstr(
 model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:]) >= 3)
 
-#9. Cantidad de trabajadores minima por máquina
-model.addConstr(quicksum(Y[m, d] for m in M) * W <= quicksum(S[k, d] for k in K) for d in D)
+# 9. Cantidad de trabajadores minima por máquina
+#model.addConstr(quicksum(Y[m, d] for m in M) * W <= quicksum(S[k, d] for k in K) for d in D)
 
-#10. Ciclo de trabajo
+# 10. Ciclo de trabajo
+
+model.optimize()
+model.printAttr("X")
