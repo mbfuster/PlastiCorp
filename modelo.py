@@ -21,9 +21,9 @@ model.update()
 # Restricciones
 
 # 1. No superar presupuesto
-model.addConstr(quicksum(quicksum((quicksum(Y[m][h][d] * theta[m])for m in M)
-    + (quicksum(S[k][d] * t[k]["sueldo"])for k in K)+(Z[d] * xi) + gamma
-    + (quicksum(quicksum(mu[p] * F[p][j][d])for p in P)for j in J))for h in H)for d in D <= PR)
+model.addConstr(quicksum(quicksum((quicksum(Y[m,h,d] * theta[m])for m in M)
+    + (quicksum(S[k,d] * t[k]["sueldo"])for k in K)+(Z[d] * xi) + gamma
+    + (quicksum(quicksum(mu[p] * F[p,j,d])for p in P)for j in J))for h in H)for d in D <= PR)
 
 #model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
 #                  for d in D), name="presupuesto")
