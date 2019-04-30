@@ -24,13 +24,18 @@ CBA = 3.3
 CC = None  # REVISAR!!
 
 # Pedidos
-delta = {("cliente", "producto", "dia"): 0}  # CAMBIAR!!
+delta = {"Imp":{"skin":{1:1412, 2:897, 6:876}},"blister":{10:876}},"regulador":{2:980, 4:945}},"sellado electonico":{}},
+"Viso":{"skin":{},"blister":{4:877, 5:915, 15:1877},"regulador":{8:994, 20:864},"sellado electonico":{}},
+"Srf":{"skin":{},"blister":{4:875, 9:850},"regulador":{},"sellado electonico":{17:450}},
+"ball":{"skin":{},"blister":{},"regulador":{},"sellado electonico":{1:850, 16:637, 18:986}}}  # CAMBIAR!!
 
 # Costo arriendo
 gamma = 800000
 
 # Costos proveedores
-sigma = {"pv1": {}, "pv2": {}}
+sigma = {"pv1": {"flexible 150mm":101,"rigido 150mm":205,"rigido 200mm":300},
+         "pv2": {"flexible 150mm":105,"rigido 150mm":200,"rigido 200mm":301}
+         }
 
 # Volumen desechado
 beta = 0.015
