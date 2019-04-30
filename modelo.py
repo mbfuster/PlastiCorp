@@ -19,11 +19,11 @@ model.update()
 
 # Restricciones
 
-# No superar presupuesto
+# 1. No superar presupuesto
 model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
                   for d in D), name="presupuesto")
 
-# Satisfaccion demanda y conservacion de flujo
+# 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
 model.addConstrs((X[i, 1] - H[i, 1] >= delta[c, 1, i]
                   for i in I
@@ -45,14 +45,14 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
                   for c in C
                   if (c, d, i) not in delta), name="demanda")  # Revisar si es necesaria
 
-# Se prende la maquina solo si se utiliza en el dia
-# M = quicksum(quicksum(X[i, d] for i in I) for d in D).getValue()
+# 3. Se prende la maquina solo si se utiliza en el dia
+M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
 
-# model.addConstrs(quicksum(X[i, d] for i in I) <= M * Y[m, d]
-#                  for d in D
-#                  for m in M)
+model.addConstrs(quicksum(X[i, d] for i in I) <= M * Y[m, d]
+                  for d in D
+                  for m in M)
 
-# La cantidad de materia prima j a comprar en período d debe ser igual o
+# 4. La cantidad de materia prima j a comprar en período d debe ser igual o
 # mayor a lo que se requiere
 
 # # Primer dia
@@ -66,13 +66,15 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
 #                  for d in D[1:]
 # if (i, j) in MP)  # Revisar si no genera error por no definir i
 
-# No se puede superar la capacidad de la bodega
+# 5. No se puede superar la capacidad de la bodega
 model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] for j in J) <= CB
                   for d in D), name="bodega")
 
-# Si el contenedor de basura está lleno se debe llamar a camión recolector
+# 6. Si el contenedor de basura está lleno se debe llamar a camión recolector
 # de basura para que retire el material
-
+M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
+model.addConstr(
+    CBA - quicksum(X[i,d] + X[i,d-1] for i in I) * beta <= M * (i - Z[d]) for d in D)
 
 # Minimo trabajadores nacionales
 model.addConstr(
@@ -93,3 +95,5 @@ model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[11:16]) >= 3)
 model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:]) >= 3)
+
+#Cantidad de trabajadores minima por máquina
