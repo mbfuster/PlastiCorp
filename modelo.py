@@ -76,7 +76,7 @@ M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
 model.addConstr(
     CBA - quicksum(X[i,d] + X[i,d-1] for i in I) * beta <= M * (i - Z[d]) for d in D)
 
-# Minimo trabajadores nacionales
+# 7. Minimo trabajadores nacionales
 model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[:6]) >= 2)
 model.addConstr(
@@ -86,7 +86,7 @@ model.addConstr(
 model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[16:]) >= 2)
 
-# Minimo trabajadoras mujeres
+# 8. Minimo trabajadoras mujeres
 model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[:6]) >= 3)
 model.addConstr(
@@ -96,4 +96,7 @@ model.addConstr(
 model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:]) >= 3)
 
-#Cantidad de trabajadores minima por máquina
+#9. Cantidad de trabajadores minima por máquina
+model.addConstr(quicksum(Y[m, d] for m in M) * W <= quicksum(S[k, d] for k in K) for d in D)
+
+#10. Ciclo de trabajo
