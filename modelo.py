@@ -31,10 +31,10 @@ model.update()
 # Restricciones
 
 # 1. No superar presupuesto
-# model.addConstr(quicksum(quicksum(quicksum(Y[m, h, d] * theta[m]for m in M)
+# model.addConstrs(quicksum(quicksum(quicksum(Y[m, h, d] * theta[m]for m in M)
 #                                   + (quicksum(S[k, d] * t[k]["sueldo"]
 #                                      for k in K))+(Z[d] * xi) + gamma
-#                                   + (quicksum(quicksum(mu[p] * F[p, j, d] for p in P)for j in J))for h in H)for d in D)) <= PR)
+#                                   + (quicksum(quicksum(mu[p] * F[p, j, d] for p in P)for j in J))for h in H)for d in D)) <= PR, "presupuesto")
 
 # model.addConstrs((quicksum(X[i, d] for i in I) + quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P) for j in J) <= PR
 #                  for d in D), name="presupuesto")
@@ -62,7 +62,7 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
                   if (c, d, i) not in delta), name="demanda")  # Revisar si es necesaria
 
 # 3. Se prende la maquina solo si se utiliza en el dia
-#M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
+# M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
 #
 # model.addConstrs(quicksum(X[i, d] for i in I) <= M * Y[m, d]
 #                  for d in D
@@ -118,8 +118,11 @@ model.addConstr(
 # 10. Ciclo de trabajo
 
 obj = quicksum(quicksum(quicksum(Y[m, h, d]*theta[m]
-                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] for k in K)for d in D)
+                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] for k in K)for d in D) +\
+    quicksum(Z[d]*xi for d in D) + gamma
 
+
+obj2 = quicksum(quicksum(mu[p, j] for p in P)for j in J)
 # model.setObjective(obj, GRB.MINIMIZE)
 
 model.optimize()
