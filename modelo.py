@@ -14,7 +14,7 @@ H = model.addVars(I, D, vtype=GRB.INTEGER, name="H")
 Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q")
 S = model.addVars(K, D, vtype=GRB.BINARY, name="S")  # W_k_d en el modelo
 O = model.addVars(I, E, D, Hs, vtype=GRB.BINARY, name="O")
-
+U = model.addVars(I, E, M, vtype=GRB.BINARY, name="U")
 
 # Llama a update para agregar las variables al modelo
 model.update()
@@ -59,12 +59,12 @@ model.addConstrs(quicksum(O[i, e, d, h] for i in I) <= Y[m, h, d]
 
 # 4. La cantidad de materia prima j a comprar en período d debe ser igual o
 # mayor a lo que se requiere
-
+#
 # model.addConstrs(quicksum(MP[i, j]*X[i, d] for i in I) <= quicksum(F[j, p, d]
-#                                                                   for p in P)+Q[j, d]-Q[j, d-1] for j in J for d in D if d != 1)
+#                                                                    for p in P)+Q[j, d]-Q[j, d-1] for j in J for d in D if d != 1)
 
-mode.addConstrs(quicksum(MP[i, j] * X[i, j]
-                         for i in I) <= quicksum(f[j, p, 1] - q[j, d] for p in P) for j in J)
+# model.addConstrs(quicksum(MP[i, j] * X[i, j]
+#                          for i in I) <= quicksum(f[j, p, 1] - q[j, d] for p in P) for j in J)
 
 # Primer dia
 # model.addConstrs(quicksum(MP[i, j] * X[i, 1] for i in I) <=
@@ -76,7 +76,8 @@ mode.addConstrs(quicksum(MP[i, j] * X[i, j]
 #                  for j in J
 #                  for d in D[1:]
 # if (i, j) in MP)  # Revisar si no genera error por no definir i
-mode.addConstrs(quicksum(MP[i][j] * X[i,j] for i in I) <= quicksum(f[j,p,1] - q[j,d] for p in P) for j in J)
+# model.addConstrs(quicksum(MP[i][j] * X[i, j]
+#                          for i in I) <= quicksum(f[j, p, 1] - q[j, d] for p in P) for j in J)
 
 # 5. No se puede superar la capacidad de la bodega
 model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] for j in J) <= CB
@@ -115,6 +116,11 @@ model.addConstrs(quicksum(quicksum(Y[m, h, d]for m in M)
 # 10. Ciclo de trabajo
 model.addConstrs(quicksum(quicksum(O[i, e, d, h] for d in D)
                           for h in Hs) <= O[i, e, d, h]for i in I for e in E for d in D for h in Hs)
+
+
+# 11
+model.addConstrs(quicksum(O[i, e, d, h]*U[i, e, m]
+                          for i in I) <= 1 for m in M for d in D for h in Hs for e in E)
 
 obj = quicksum(quicksum(quicksum(Y[m, h, d]*theta[m]
                                  for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] for k in K)for d in D) +\

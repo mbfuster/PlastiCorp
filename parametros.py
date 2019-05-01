@@ -1,3 +1,4 @@
+from collections import defaultdict
 # Capacidad de la bodega
 CB = 475
 
@@ -59,7 +60,7 @@ V = {"skin": 0.000045, "blister": 0.0001, "electronico": 0.0052,
      "regulador": 0.0047625}
 
 # Volumen materia prima
-v = {"flexible 150": 0.00014364, "rigido 150": 0.000216, "rigido 200": 0.0004 }
+v = {"flexible 150": 0.00014364, "rigido 150": 0.000216, "rigido 200": 0.0004}
 
 # Materia prima por producto en unidades de plancha de plastico
 MP = {("blister", "rigido 200"): 0.066667, ("skin", "flexible 150"): 0.0833,
@@ -79,7 +80,7 @@ A = {("blister", "skin"): (),
      ("blister", "etiquetado"): ("skin", "troqueladora", "selladora", "relleno"),
      ("blister", "envasado"): ("skin", "troqueladora", "selladora", "relleno",
                                "etiquetado"),
-     ("skin", "skin"):(),
+     ("skin", "skin"): (),
      ("skin", "toqueladora"): ("skin"),
      ("skin", "etiquetado"): ("skin", "troqueladora"),
      ("skin", "envasado"): ("skin", "troqueladora", "etiquetado"),
