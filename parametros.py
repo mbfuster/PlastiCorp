@@ -71,4 +71,28 @@ mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0},
       "pv2": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0}}  # CAMBIAR
 
 # Presupuesto inicial
+<<<<<<< Updated upstream
 PR = 300000000
+=======
+PR = 300
+
+A = {("blister", "skin"): (),
+     ("blister", "troqueladora"): ("skin"),
+     ("blister", "selladora"): ("skin", "toqueladora"),
+     ("blister", "relleno"): ("skin", "troqueladora", "selladora"),
+     ("blister", "etiquetado"): ("skin", "troqueladora", "selladora", "relleno"),
+     ("blister", "envasado"): ("skin", "troqueladora", "selladora", "relleno",
+                               "etiquetado"),
+     ("skin", "skin"):(),
+     ("skin", "toqueladora"): ("skin"),
+     ("skin", "etiquetado"): ("skin", "troqueladora"),
+     ("skin", "envasado"): ("skin", "troqueladora", "etiquetado"),
+     ("electronico", "skin"): (),
+     ("electronico", "selladora"): ("skin"),
+     ("electronico", "desgajado"): ("skin", "selladora"),
+     ("electronico", "etiquetado"): ("skin", "selladora", "desgajado"),
+     ("electronico", "envasado"): ("skin", "selladora", "desgajado"),
+     ("regulador", "skin"): (),
+     ("regulador", "selladora"): ("skin"),
+     ("regulador", "envasado"): ("skin", "selladora")}
+>>>>>>> Stashed changes

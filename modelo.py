@@ -52,10 +52,10 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 model.addConstrs(quicksum(quicksum(O[i, e, d, h] for h in Hs)
-                          for i in I) >= quicksum(Y[m, h, d] for h in Hs) for d in D for e in E for m in M)
+                          for i in I) >= quicksum(Y[m, h, d] for h in Hs) for d in D for e in E if e == m for m in M)
 
 model.addConstrs(quicksum(O[i, e, d, h] for i in I) <= Y[m, h, d]
-                 for h in Hs for m in M for d in D for e in E)
+                 for h in Hs for m in M for d in D for e in E if e == m)
 
 
 # M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
@@ -110,9 +110,7 @@ model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:]) >= 3)
 
 # 9. Cantidad de trabajadores minima por máquina
-# model.addConstr((quicksum(quicksum(Y[m, h, d] * W[m] for m in M)
-#                          for h in Hs) <= quicksum(S[k, d] for k in K)) for d in D)
-
+model.addConstrs(quicksum(quicksum(Y[m,h,d]for m in M)for h in Hs) <= quicksum(S[k,d] for k in K) for d in D)
 # 10. Ciclo de trabajo
 model.addConstrs(quicksum(quicksum(O[i, e, d, h] for d in D)
                           for h in Hs) <= O[i, e, d, h]for i in I for e in E for d in D for h in Hs)
