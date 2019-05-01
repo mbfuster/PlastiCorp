@@ -6,12 +6,12 @@ from parametros import *  # Todos los parametros de la modelacio
 # Generacion de modelo
 model = Model("Factory Planning Plasticorp")
 
-X = model.addVars(I, D, vtype=GRB.INTEGER, name="X")
+X = model.addVars(I, D, vtype=GRB.INTEGER, name="X", lb=0)
 Y = model.addVars(M, Hs, D, vtype=GRB.BINARY, name="Y")
 Z = model.addVars(D, vtype=GRB.BINARY, name="D")
-F = model.addVars(J, P, D, vtype=GRB.INTEGER, name="F")
+F = model.addVars(J, P, D, vtype=GRB.INTEGER, name="F", lb=0)
 H = model.addVars(I, D, vtype=GRB.INTEGER, name="H")
-Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q")
+Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q", lb=0)
 S = model.addVars(K, D, vtype=GRB.BINARY, name="S")  # W_k_d en el modelo
 O = model.addVars(I, E, D, Hs, vtype=GRB.BINARY, name="O")
 U = model.addVars(I, E, M, vtype=GRB.BINARY, name="U")
