@@ -10,7 +10,7 @@ X = model.addVars(I, D, vtype=GRB.INTEGER, name="X", lb=0)
 Y = model.addVars(M, Hs, D, vtype=GRB.BINARY, name="Y")
 Z = model.addVars(D, vtype=GRB.BINARY, name="D")
 F = model.addVars(J, P, D, vtype=GRB.INTEGER, name="F", lb=0)
-H = model.addVars(I, D, vtype=GRB.INTEGER, name="H")
+H = model.addVars(I, D, vtype=GRB.INTEGER, name="H", lb=0)
 Q = model.addVars(J, D, vtype=GRB.INTEGER, name="Q", lb=0)
 S = model.addVars(K, D, vtype=GRB.BINARY, name="S")  # W_k_d en el modelo
 O = model.addVars(I, E, D, Hs, vtype=GRB.BINARY, name="O")
