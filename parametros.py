@@ -50,31 +50,27 @@ beta = 0.015
 theta = {"skin": 84964, "troqueladora": 60525, "selladora": 70960}
 
 # Precio venta productos
-eta = {"skin": 0, "blister": 0, "electronico": 0, "regulador": 0}  # CAMBIAR
-
+eta = {"skin": 178, "blister": 306, "electronico": 450, "regulador": 200}  # CAMBIAR
 # Costo extraccion basura
 xi = 60000
 
 # Volumen producto
-V = {"skin": 0, "blister": 0, "electronico": 0,
-     "regulador": 0}  # CAMBIAR VALORES
+V = {"skin": 0.000045, "blister": 0.0001, "electronico": 0.0052,
+     "regulador": 0.0047625}
 
 # Volumen materia prima
-v = {"flexible 150": 0, "rigido 150": 0, "rigido 200": 0}
+v = {"flexible 150": 0.00014364, "rigido 150": 0.000216, "rigido 200": 0.0004 }
 
 # Materia prima por producto en unidades de plancha de plastico
-MP = {("blister", "rigido 200"): 0, ("skin", "flexible 150"): 0.17,
-      ("electonico", "rigido 150"): 0}  # HAY QUE CALCULARLO
+MP = {("blister", "rigido 200"): 0.066667, ("skin", "flexible 150"): 0.0833,
+      ("electonico", "rigido 150"): 1.66667}  # HAY QUE CALCULARLO
 
 # Costo materia prima
-mu = {"pv1": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0},
-      "pv2": {"rigido 200": 0, "rigido 150": 0, "flexible 150": 0}}  # CAMBIAR
+mu = {"pv1": {"rigido 200": 300, "rigido 150": 205, "flexible 150": 101},
+      "pv2": {"rigido 200": 301, "rigido 150": 200, "flexible 150": 105}}  # CAMBIAR
 
 # Presupuesto inicial
-<<<<<<< Updated upstream
 PR = 300000000
-=======
-PR = 300
 
 A = {("blister", "skin"): (),
      ("blister", "troqueladora"): ("skin"),
@@ -95,4 +91,3 @@ A = {("blister", "skin"): (),
      ("regulador", "skin"): (),
      ("regulador", "selladora"): ("skin"),
      ("regulador", "envasado"): ("skin", "selladora")}
->>>>>>> Stashed changes

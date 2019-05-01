@@ -76,6 +76,7 @@ mode.addConstrs(quicksum(MP[i, j] * X[i, j]
 #                  for j in J
 #                  for d in D[1:]
 # if (i, j) in MP)  # Revisar si no genera error por no definir i
+mode.addConstrs(quicksum(MP[i][j] * X[i,j] for i in I) <= quicksum(f[j,p,1] - q[j,d] for p in P) for j in J)
 
 # 5. No se puede superar la capacidad de la bodega
 model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] for j in J) <= CB
