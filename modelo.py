@@ -52,24 +52,23 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= 0
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 model.addConstrs(quicksum(quicksum(O[i, e, d, h] for h in Hs)
-                          for i in I) >= quicksum(Y[m, h, d] for h in Hs) for d in D for e in E if e == m for m in M)
+                          for i in I) >= quicksum(Y[m, h, d] for h in Hs) for d in D for e in E for m in M if e == m)
 
 model.addConstrs(quicksum(O[i, e, d, h] for i in I) <= Y[m, h, d]
                  for h in Hs for m in M for d in D for e in E if e == m)
 
-
-# M = quicksum(quicksum(delta[i, d] for i in I) for d in D)
-#
-# model.addConstrs(quicksum(X[i, d] for i in I) <= M * Y[m, d]
-#                  for d in D
-#                  for m in M)
-
 # 4. La cantidad de materia prima j a comprar en período d debe ser igual o
 # mayor a lo que se requiere
 
+# model.addConstrs(quicksum(MP[i, j]*X[i, d] for i in I) <= quicksum(F[j, p, d]
+#                                                                   for p in P)+Q[j, d]-Q[j, d-1] for j in J for d in D if d != 1)
+
+mode.addConstrs(quicksum(MP[i, j] * X[i, j]
+                         for i in I) <= quicksum(f[j, p, 1] - q[j, d] for p in P) for j in J)
+
 # Primer dia
 # model.addConstrs(quicksum(MP[i, j] * X[i, 1] for i in I) <=
-#                  quicksum(F[j, p, 1] for p in P) + Q[j, 1]
+#                quicksum(F[j, p, 1] for p in P) + Q[j, 1]
 #                  for j in J
 #                  if (i, j) in MP)  # Revisar si no genera error por no definir i
 # # Otros dias
@@ -110,7 +109,8 @@ model.addConstr(
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:]) >= 3)
 
 # 9. Cantidad de trabajadores minima por máquina
-model.addConstrs(quicksum(quicksum(Y[m,h,d]for m in M)for h in Hs) <= quicksum(S[k,d] for k in K) for d in D)
+model.addConstrs(quicksum(quicksum(Y[m, h, d]for m in M)
+                          for h in Hs) <= quicksum(S[k, d] for k in K) for d in D)
 # 10. Ciclo de trabajo
 model.addConstrs(quicksum(quicksum(O[i, e, d, h] for d in D)
                           for h in Hs) <= O[i, e, d, h]for i in I for e in E for d in D for h in Hs)
