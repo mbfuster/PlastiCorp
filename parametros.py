@@ -1,4 +1,6 @@
 from collections import defaultdict
+from conjuntos import *
+
 # Capacidad de la bodega
 CB = 475
 
@@ -51,7 +53,7 @@ beta = 0.015
 theta = {"skin": 84964, "troqueladora": 60525, "selladora": 70960}
 
 # Precio venta productos
-eta = {"skin": 178, "blister": 306, "electronico": 450, "regulador": 200}  # CAMBIAR
+eta = {"skin": 178, "blister": 306, "electronico": 450, "regulador": 200}
 # Costo extraccion basura
 xi = 60000
 
@@ -63,12 +65,18 @@ V = {"skin": 0.000045, "blister": 0.0001, "electronico": 0.0052,
 v = {"flexible 150": 0.00014364, "rigido 150": 0.000216, "rigido 200": 0.0004}
 
 # Materia prima por producto en unidades de plancha de plastico
-MP = {("blister", "rigido 200"): 0.066667, ("skin", "flexible 150"): 0.0833,
-      ("electonico", "rigido 150"): 1.66667}  # HAY QUE CALCULARLO
+MP = {("blister", "rigido 200"): 0.066667,
+      ("skin", "flexible 150"): 0.0833,
+      ("electonico", "rigido 150"): 1.66667}
 
+for i in I:
+    for j in J:
+        if (i,j) not in MP:
+            MP[i,j] = 0
+            
 # Costo materia prima
 mu = {"pv1": {"rigido 200": 300, "rigido 150": 205, "flexible 150": 101},
-      "pv2": {"rigido 200": 301, "rigido 150": 200, "flexible 150": 105}}  # CAMBIAR
+      "pv2": {"rigido 200": 301, "rigido 150": 200, "flexible 150": 105}}
 
 # Presupuesto inicial
 PR = 300000000
