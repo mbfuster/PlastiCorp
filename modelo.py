@@ -79,10 +79,13 @@ model.addConstrs((quicksum(MP[i, j] * X[i, 1] for i in I) <=
 model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I if i in MP) <= quicksum(F[j, p, d] for p in P) + Q[j, d - 1]
                   for j in J
                   for d in D[1:]), name="compra materia prima")
-# Flujo bodega
-model.addConstrs((Q[j, d] == quicksum(F[j, p, d] for p in P) - quicksum(MP[i, j] * X[i, d] for i in I if i in MP)
+# Flujo bodega materia prima
+model.addConstrs((Q[j, 1] == quicksum(F[j, p, 1] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I if i in MP)
+                  for j in J), name="inventario")
+
+model.addConstrs((Q[j, d] == quicksum(F[j, p, d] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I if i in MP)
                   for j in J
-                  for d in D), name="inventario")
+                  for d in D[1:]), name="inventario")
 
 
 # 5. No se puede superar la capacidad de la bodega
@@ -145,7 +148,7 @@ model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
 
 
 # Funcion Objetivo
-obj=quicksum(quicksum(quicksum(Y[m, d] * theta[m]
+obj = quicksum(quicksum(quicksum(Y[m, d] * theta[m]
                                  for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] for k in K)for d in D) +\
     quicksum(Z[d] * xi for d in D) + gamma + \
     quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
