@@ -117,3 +117,4 @@ for i in I:
         for m in M:
             if not (i, e, m) in U:
                 U[i, e, m] = 0
+                
