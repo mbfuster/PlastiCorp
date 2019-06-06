@@ -25,7 +25,7 @@ C = ["imp", "sfr", "viso", "ball"]
 # Etapas de produccion
 L = {"blister": ("skin", "troqueladora", "selladora",
                  "relleno", "etiquetado", "envasado"),
-     "skin": ("skin", "toqueladora", "etiquetado", "envasado"),
+     "skin": ("skin", "troqueladora", "etiquetado", "envasado"),
      "electronico": ("skin", "selladora", "desgajado", "etiquetado",
                      "envasado"),
      "regulador": ("skin", "selladora", "envasado")}
