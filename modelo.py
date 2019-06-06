@@ -94,8 +94,6 @@ model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] 
 
 # 6. Si el contenedor de basura está lleno se debe llamar a camión recolector
 # de basura para que retire el material
-model.addConstrs(((beta * quicksum(X["electronico", d] for d in range(1, d1 + 1))) / CBA >= Z[d1]
-                  for d1 in D), name="basura")
 
 model.addConstrs((beta * quicksum(X["electronico", d] for d in range(1, d1))
                   <= CBA * (1 + quicksum(Z[d] for d in range(1, d1)))
@@ -134,13 +132,20 @@ model.addConstrs((quicksum(Y[m, d]for m in M)
                   <= quicksum(S[k, d] for k in K)
                   for d in D), name="trabajadores por maquina")
 # 10. Ciclo de trabajo
-model.addConstrs(quicksum(quicksum(O[i, e, d, h] for d in D[:d1])
-                          for h in Hs[:h1]) <= O[i, e, d1, h1]
-                 for i in I
-                 for e in E
-                 for d1 in D
-                 for h1 in Hs)
-
+model.addConstrs((quicksum(quicksum(O[i, e, d, h] for d in D[:d1])
+                           for h in Hs[:h1]) <= O[i, e, d1, h1]
+                  for i in I
+                  for e in E
+                  for d1 in D
+                  for h1 in Hs), name="ciclo trabajo")
+model.addConstrs((quicksum(quicksum(O[i, e, d, h] for d in D)
+                           for h in Hs) <= 1
+                  for i in I
+                  for e in E), name="ciclo trabajo")
+model.addConstrs((X[i, d1] <= quicksum(quicksum(O[i, e, d, h] for d in D[:d1])
+                                       for h in Hs) * BIGM
+                  for d1 in D
+                  for i in I), name="ciclo trabajo")
 
 # 11. Se produce un tipo de producto por maquina a la vez
 model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
