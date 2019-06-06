@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from gurobipy import Model, GRB, quicksum
 from conjuntos import *  # Todos los conjuntos de la modelacio
 from parametros import *  # Todos los parametros de la modelacio

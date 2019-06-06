@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from collections import defaultdict
 from conjuntos import *
 
@@ -117,4 +119,3 @@ for i in I:
         for m in M:
             if not (i, e, m) in U:
                 U[i, e, m] = 0
-                

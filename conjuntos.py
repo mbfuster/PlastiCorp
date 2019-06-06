@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Productos
 I = ["skin", "blister", "electronico", "regulador"]
 
