@@ -71,9 +71,9 @@ MP = {("blister", "rigido 200"): 0.066667,
 
 for i in I:
     for j in J:
-        if (i,j) not in MP:
-            MP[i,j] = 0
-            
+        if (i, j) not in MP:
+            MP[i, j] = 0
+
 # Costo materia prima
 mu = {"pv1": {"rigido 200": 300, "rigido 150": 205, "flexible 150": 101},
       "pv2": {"rigido 200": 301, "rigido 150": 200, "flexible 150": 105}}
@@ -100,3 +100,20 @@ A = {("blister", "skin"): (),
      ("regulador", "skin"): (),
      ("regulador", "selladora"): ("skin"),
      ("regulador", "envasado"): ("skin", "selladora")}
+
+# Uso de maquina en proceso
+U = {("blister", "skin", "skin"): 1,
+     ("blister", "troqueladora", "troqueladora"): 1,
+     ("blister", "selladora", "selladora"): 1,
+     ("skin", "skin", "skin"): 1,
+     ("skin", "troqueladora", "troqueladora"): 1,
+     ("electronico", "skin", "skin"): 1,
+     ("electronico", "selladora", "selladora"): 1,
+     ("regulador", "skin", "skin"): 1,
+     ("regulador", "selladora", "selladora"): 1}
+
+for i in I:
+    for e in E:
+        for m in M:
+            if not (i, e, m) in U:
+                U[i, e, m] = 0

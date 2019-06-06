@@ -18,8 +18,7 @@ Q = model.addVars(J, D, vtype=GRB.CONTINUOUS,
 S = model.addVars(K, D, vtype=GRB.BINARY,
                   name="Empleado trabaja ")  # W_k_d en el modelo
 O = model.addVars(I, E, D, Hs, vtype=GRB.BINARY, name="Realiza proceso ")
-U = model.addVars(I, E, M, vtype=GRB.BINARY,
-                  name="Maquina realiza proceso de producto ")
+
 
 # Llama a update para agregar las variables al modelo
 model.update()
@@ -37,25 +36,25 @@ model.addConstr(quicksum(quicksum(quicksum(Y[m, h, d] * theta[m]
 
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
-model.addConstrs((X[i, 1] - H[i, 1] >= delta[c, 1, i]
+model.addConstrs((X[i, 1]  >= quicksum(delta[c, 1, i] for c in C) + H[i, 1]
                   for i in I
                   for c in C
                   if (c, 1, i) in delta), name="demanda")
-model.addConstrs((X[i, 1] - H[i, 1] >= 0
+model.addConstrs((X[i, 1]  >= H[i, 1]
                   for i in I
                   for c in C
-                  if (c, 1, i) not in delta), name="demanda")  # Revisar si es necesaria
+                  if (c, 1, i) not in delta), name="demanda")
 # Otros dias
-model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, d, i] + H[i, d]
+model.addConstrs((X[i, d] + H[i, d - 1] >= quicksum(delta[c, d, i] for c in C)+ H[i, d]
                   for d in D[1:]
                   for i in I
                   for c in C
                   if (c, d, i) in delta), name="demanda")
-model.addConstrs((X[i, d] + H[i, d - 1] >= 0
+model.addConstrs((X[i, d] + H[i, d - 1] >= H[i, d]
                   for d in D[1:]
                   for i in I
                   for c in C
-                  if (c, d, i) not in delta), name="demanda")  # Revisar si es necesaria
+                  if (c, d, i) not in delta), name="demanda")
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 model.addConstrs((quicksum(quicksum(O[i, e, d, h] for h in Hs)

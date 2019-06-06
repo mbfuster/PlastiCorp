@@ -30,8 +30,6 @@ L = {"blister": ("skin", "troqueladora", "selladora",
 
 Hs = [i for i in range(1, 9)]
 
-# Conjunto de pedidos
-#E = [str(e) for e in range(0, 31)]
-
+# Conjunto de procesos
 E = ["skin", "troqueladora", "selladora", "relleno", "etiquetado", "envasado",
      "desgajado"]
