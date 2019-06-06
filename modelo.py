@@ -38,7 +38,7 @@ model.addConstr(quicksum(quicksum(quicksum(Y[m, d] * theta[m]
 
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
-model.addConstrs((X[i, 1] >= quicksum(delta[c, i, 1] for c in C if (c, i, 1) in delta) + H[i, 1]
+model.addConstrs((X[i, 1] == quicksum(delta[c, i, 1] for c in C if (c, i, 1) in delta) + H[i, 1]
                   for i in I
                   for c in C), name="demanda")
 model.addConstrs((X[i, 1] == H[i, 1]
@@ -73,12 +73,17 @@ model.addConstrs(((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for
 
 # Primer dia
 model.addConstrs((quicksum(MP[i, j] * X[i, 1] for i in I) <=
-                  quicksum(F[j, p, 1] for p in P) + Q[j, 1]
+                  quicksum(F[j, p, 1] for p in P)
                   for j in J), name="compra materia prima")
-# # Otros dias
-model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I if i in MP) <= quicksum(F[j, p, d] for p in P) + Q[j, d - 1] - Q[j, d]
+# Otros dias
+model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I if i in MP) <= quicksum(F[j, p, d] for p in P) + Q[j, d - 1]
                   for j in J
                   for d in D[1:]), name="compra materia prima")
+# Flujo bodega
+model.addConstrs((Q[j, d] == quicksum(F[j, p, d] for p in P) - quicksum(MP[i, j] * X[i, d] for i in I if i in MP)
+                  for j in J
+                  for d in D), name="inventario")
+
 
 # 5. No se puede superar la capacidad de la bodega
 model.addConstrs((quicksum(H[i, d] * V[i] for i in I) + quicksum(v[j] * Q[j, d] for j in J) <= CB
@@ -140,7 +145,7 @@ model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
 
 
 # Funcion Objetivo
-obj = quicksum(quicksum(quicksum(Y[m, d] * theta[m]
+obj=quicksum(quicksum(quicksum(Y[m, d] * theta[m]
                                  for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] for k in K)for d in D) +\
     quicksum(Z[d] * xi for d in D) + gamma + \
     quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
