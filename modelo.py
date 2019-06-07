@@ -38,24 +38,19 @@ model.addConstr(quicksum(quicksum(quicksum(Y[m, d] * theta[m]
 
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
-model.addConstrs((X[i, 1] == quicksum(delta[c, i, 1] for c in C if (c, i, 1) in delta) + H[i, 1]
-                  for i in I
-                  for c in C), name="demanda")
-model.addConstrs((X[i, 1] == H[i, 1]
-                  for i in I
-                  for c in C
-                  if (c, i, 1) not in delta), name="demanda")
+
+model.addConstrs(X[i, 1] >= delta[c, i, 1] + H[i,1]
+                 for i in I
+                 for c in C
+                 if (c, i, 1) in delta)
+
 # # Otros dias
-model.addConstrs((X[i, d] + H[i, d - 1] >= quicksum(delta[c, i, d] for c in C if (c, i, d) in delta) + H[i, d]
+
+model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d] + H[i, d]
                   for d in D[1:]
                   for i in I
                   for c in C
-                  ), name="demanda")
-model.addConstrs((X[i, d] + H[i, d - 1] == H[i, d]
-                  for d in D[1:]
-                  for i in I
-                  for c in C
-                  if (c, i, d) not in delta), name="demanda")
+                  if (c, i, d) in delta), name="demanda")
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 model.addConstrs((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I) >= Y[m, d]
@@ -136,14 +131,15 @@ model.addConstrs((quicksum(quicksum(O[i, e1, d, h] for d in D[:d1])
                            for h in Hs[:h1]) <= O[i, e, d1, h1]
                   for i in I
                   for e in E
-                  for d1 in D if (i,e) in A
-                  for e1 in A[i,e] 
-                  for h1 in Hs ), name="ciclo trabajo")
+                  for d1 in D if (i, e) in A
+                  for e1 in A[i, e]
+                  for h1 in Hs), name="ciclo trabajo")
+
 model.addConstrs((quicksum(quicksum(O[i, e, d, h] for d in D)
                            for h in Hs) <= 1
                   for i in I
                   for e in E), name="ciclo trabajo")
-model.addConstrs((X[i, d1] <= quicksum(quicksum(O[i, e, d, h] for d in D[:d1])
+model.addConstrs((X[i, d1] <= quicksum(quicksum(O[i, "envasado", d, h] for d in D[:d1])
                                        for h in Hs) * BIGM
                   for d1 in D
                   for i in I), name="ciclo trabajo")
@@ -155,7 +151,7 @@ model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
 
 # Funcion Objetivo
 obj = quicksum(quicksum(quicksum(Y[m, d] * theta[m]
-                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d]*t[k]['sueldo'] for k in K)for d in D) +\
+                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +\
     quicksum(Z[d] * xi for d in D) + gamma + \
     quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
                                for p in P)for j in J)for d in D)
