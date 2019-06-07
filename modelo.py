@@ -14,7 +14,7 @@ Z = model.addVars(D, vtype=GRB.BINARY, name="Camion recolector ")
 F = model.addVars(J, P, D, vtype=GRB.CONTINUOUS,
                   name="Compra materia prima ", lb=0)
 H = model.addVars(I, D, vtype=GRB.CONTINUOUS,
-                  name="Cantidad materia producto bodega ", lb=0)
+                  name="Cantidad producto bodega ", lb=0)
 Q = model.addVars(J, D, vtype=GRB.CONTINUOUS,
                   name="Cantidad materia prima bodega ", lb=0)
 S = model.addVars(K, D, vtype=GRB.BINARY,
@@ -52,16 +52,17 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d]
                   for c in C
                   if (c, i, d) in delta), name="demanda")
 
+# Flujo bodega productos
 model.addConstrs((H[i, 1] == X[i, 1] - delta[c, i, 1]
                   for i in I
                   for c in C
-                  if (c, i, 1) in delta), name="demanda")
+                  if (c, i, 1) in delta), name="flujo productos")
 
-model.addConstrs((H[i, d] == H[i, d - 1] + X[i, d] - delta[c, i, d] + H[i, d]
+model.addConstrs((H[i, d] == H[i, d - 1] + X[i, d] - delta[c, i, d]
                   for d in D[1:]
                   for i in I
                   for c in C
-                  if (c, i, d) in delta), name="demanda")
+                  if (c, i, d) in delta), name="flujo productos")
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 model.addConstrs((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I) >= Y[m, d]
@@ -85,11 +86,12 @@ model.addConstrs((quicksum(MP[i, j] * X[i, 1] for i in I) <=
 model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I if i in MP) <= quicksum(F[j, p, d] for p in P) + Q[j, d - 1]
                   for j in J
                   for d in D[1:]), name="compra materia prima")
+
 # Flujo bodega materia prima
-model.addConstrs((Q[j, 1] == quicksum(F[j, p, 1] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I if i in MP)
+model.addConstrs((Q[j, 1] == quicksum(F[j, p, 1] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I)
                   for j in J), name="inventario")
 
-model.addConstrs((Q[j, d] == quicksum(F[j, p, d] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I if i in MP)
+model.addConstrs((Q[j, d] == Q[j, d-1] + quicksum(F[j, p, d] for p in P) - quicksum(MP[i, j] * X[i, d] for i in I)
                   for j in J
                   for d in D[1:]), name="inventario")
 
@@ -132,7 +134,8 @@ model.addConstr((
 model.addConstr((
     quicksum(quicksum(S[k, d] * t[k]['mujer'] for k in K) for d in D[16:])
     >= 3), name="tabajadoras mujeres")
-#
+
+
 # 9. Cantidad de trabajadores minima por máquina
 model.addConstrs((quicksum(Y[m, d]for m in M)
                   <= quicksum(S[k, d] for k in K)
