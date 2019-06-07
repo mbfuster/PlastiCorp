@@ -32,13 +32,13 @@ BIGM = pow(10, 6)
 # Pedidos
 delta = {("imp", "skin", 1): 1000, ("Imp", "skin", 2): 0,
          ("imp", "skin", 6): 0, ("Imp", "blister", 10): 0,
-         ("imp", "regulador", 2): 0, ("imp", "regulador", 4): 0,
+         ("imp", "regulador", 2): 0, ("imp", "regulador", 4): 4000,
          ("viso", "blister", 4): 0, ("viso", "blister", 5): 0,
          ("viso", "blister", 15): 0, ("viso", "regulador", 8): 0,
          ("viso", "regulador", 20): 0, ("sfr", "blister", 4): 0,
          ("sfr", "blister", 9): 0, ("sfr", "electronico", 17): 0,
-         ("ball", "electronico", 1): 1, ("ball", "electronico", 16): 0,
-         ("ball", "electronico", 18): 0}
+         ("ball", "electronico", 1): 15, ("ball", "electronico", 16): 0,
+         ("ball", "electronico", 18): 6000}
 
 # Costo arriendo
 gamma = 800000

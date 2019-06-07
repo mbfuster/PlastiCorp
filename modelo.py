@@ -39,14 +39,25 @@ model.addConstr(quicksum(quicksum(quicksum(Y[m, d] * theta[m]
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
 
-model.addConstrs(X[i, 1] >= delta[c, i, 1] + H[i,1]
+model.addConstrs(X[i, 1] >= delta[c, i, 1]
                  for i in I
                  for c in C
                  if (c, i, 1) in delta)
 
-# # Otros dias
+# Otros dias
 
-model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d] + H[i, d]
+model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d]
+                  for d in D[1:]
+                  for i in I
+                  for c in C
+                  if (c, i, d) in delta), name="demanda")
+
+model.addConstrs((H[i, 1] == X[i, 1] - delta[c, i, 1]
+                  for i in I
+                  for c in C
+                  if (c, i, 1) in delta), name="demanda")
+
+model.addConstrs((H[i, d] == H[i, d - 1] + X[i, d] - delta[c, i, d] + H[i, d]
                   for d in D[1:]
                   for i in I
                   for c in C
