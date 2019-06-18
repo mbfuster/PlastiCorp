@@ -44,6 +44,11 @@ model.addConstrs((X[i, 1] >= delta[c, i, 1] + H[i, 1]
                  for c in C
                  if (c, i, 1) in delta), name="demanda")
 
+# model.addConstrs((X[i, 1] == H[i, 1]
+#                   for i in I
+#                   for c in C
+#                   if (c, i, 1) not in delta), name="demanda")
+
 # Otros dias
 
 model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d] + H[i,d]
@@ -51,6 +56,12 @@ model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d] + H[i,d]
                   for i in I
                   for c in C
                   if (c, i, d) in delta), name="demanda")
+
+# model.addConstrs((X[i, d] + H[i, d - 1] == H[i, d]
+#                   for d in D[1:]
+#                   for i in I
+#                   for c in C
+#                   if (c, i, d) not in delta), name="demanda")
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 model.addConstrs((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I) >= Y[m, d]
@@ -79,7 +90,7 @@ model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I if i in MP) <= quicksum
 model.addConstrs((Q[j, 1] == quicksum(F[j, p, 1] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I)
                   for j in J), name="inventario")
 
-model.addConstrs((Q[j, d] == Q[j, d-1] + quicksum(F[j, p, d] for p in P) - quicksum(MP[i, j] * X[i, d] for i in I)
+model.addConstrs((Q[j, d] == Q[j, d - 1] + quicksum(F[j, p, d] for p in P) - quicksum(MP[i, j] * X[i, d] for i in I)
                   for j in J
                   for d in D[1:]), name="inventario")
 
@@ -139,8 +150,8 @@ model.addConstrs((quicksum(quicksum(O[i, e1, d, h] for d in D[:d1])
 
 model.addConstrs((quicksum(quicksum(O[i, e, d, h] for d in D)
                            for h in Hs) <= 1
-                  for i in I
-                  for e in E), name="ciclo trabajo")
+                  for e in E
+                  for i in I), name="ciclo trabajo")
 model.addConstrs((X[i, d1] <= quicksum(quicksum(O[i, "envasado", d, h] for d in D[:d1])
                                        for h in Hs) * BIGM
                   for d1 in D
