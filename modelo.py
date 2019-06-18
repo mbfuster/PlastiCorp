@@ -39,30 +39,18 @@ model.addConstr(quicksum(quicksum(quicksum(Y[m, d] * theta[m]
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
 
-model.addConstrs(X[i, 1] >= delta[c, i, 1]
+model.addConstrs((X[i, 1] >= delta[c, i, 1] + H[i, 1]
                  for i in I
                  for c in C
-                 if (c, i, 1) in delta)
+                 if (c, i, 1) in delta), name="demanda")
 
 # Otros dias
 
-model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d]
+model.addConstrs((X[i, d] + H[i, d - 1] >= delta[c, i, d] + H[i,d]
                   for d in D[1:]
                   for i in I
                   for c in C
                   if (c, i, d) in delta), name="demanda")
-
-# Flujo bodega productos
-model.addConstrs((H[i, 1] == X[i, 1] - delta[c, i, 1]
-                  for i in I
-                  for c in C
-                  if (c, i, 1) in delta), name="flujo productos")
-
-model.addConstrs((H[i, d] == H[i, d - 1] + X[i, d] - delta[c, i, d]
-                  for d in D[1:]
-                  for i in I
-                  for c in C
-                  if (c, i, d) in delta), name="flujo productos")
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 model.addConstrs((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I) >= Y[m, d]
@@ -142,7 +130,7 @@ model.addConstrs((quicksum(Y[m, d]for m in M)
                   for d in D), name="trabajadores por maquina")
 # 10. Ciclo de trabajo
 model.addConstrs((quicksum(quicksum(O[i, e1, d, h] for d in D[:d1])
-                           for h in Hs[:h1]) <= O[i, e, d1, h1]
+                           for h in Hs[:h1]) >= O[i, e, d1, h1]
                   for i in I
                   for e in E
                   for d1 in D if (i, e) in A
@@ -176,8 +164,8 @@ model.setObjective(obj, GRB.MINIMIZE)
 model.optimize()
 
 # Imprimir resultado
-with open("output.txt", "w") as file:
-    for v in model.getVars():
-        file.write("%s %g\n" % (v.varName, v.x))
+# with open("output.txt", "w") as file:
+#     for v in model.getVars():
+#         file.write("%s %g\n" % (v.varName, v.x))
 
 model.printAttr("X")
