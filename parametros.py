@@ -4,7 +4,8 @@ from collections import defaultdict
 from conjuntos import *
 
 # Capacidad de la bodega
-CB = 475
+#CB = 475
+CB = pow(10, 6)
 
 # Trabajadores por maquina
 W = {"skin": 1, "troqueladora": 2, "selladora": 2}
@@ -33,11 +34,11 @@ BIGM = pow(10, 6)
 delta = {("imp", "skin", 1): 1412, ("Imp", "skin", 2): 897,
          ("imp", "skin", 6): 876, ("Imp", "blister", 10): 876,
          ("imp", "regulador", 2): 980, ("imp", "regulador", 4): 945,
-         ("viso", "blister", 4): 0, ("viso", "blister", 5): 915,
+         ("viso", "blister", 4): 877, ("viso", "blister", 5): 915,
          ("viso", "blister", 15): 1877, ("viso", "regulador", 8): 944,
-         ("viso", "regulador", 20): 867, ("sfr", "blister", 4): 0,
+         ("viso", "regulador", 20): 867, ("sfr", "blister", 4): 875,
          ("sfr", "blister", 9): 850, ("sfr", "electronico", 17): 450,
-         ("ball", "electronico", 1): 0, ("ball", "electronico", 16): 637,
+         ("ball", "electronico", 1): 420, ("ball", "electronico", 16): 637,
          ("ball", "electronico", 18): 986}
 
 # Costo arriendo
