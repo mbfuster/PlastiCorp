@@ -88,7 +88,7 @@ mu = {"pv1": {"rigido 200": 300, "rigido 150": 205, "flexible 150": 101},
       "pv2": {"rigido 200": 301, "rigido 150": 200, "flexible 150": 105}}
 
 # Presupuesto inicial
-PR = 300000000
+PR = 4000000
 
 A = {("blister", "skin"): (),
      ("blister", "troqueladora"): ("skin",),
@@ -126,3 +126,5 @@ for i in I:
         for m in M:
             if not (i, e, m) in U:
                 U[i, e, m] = 0
+
+r = {"blister": 0.1, "skin": 0.2, "electronico": 0.4, "regulador": 0}

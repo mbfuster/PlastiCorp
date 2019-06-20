@@ -22,14 +22,6 @@ D = [i for i in range(1, 21)]
 # Clientes
 C = ["imp", "sfr", "viso", "ball"]
 
-# Etapas de produccion
-L = {"blister": ("skin", "troqueladora", "selladora",
-                 "relleno", "etiquetado", "envasado"),
-     "skin": ("skin", "troqueladora", "etiquetado", "envasado"),
-     "electronico": ("skin", "selladora", "desgajado", "etiquetado",
-                     "envasado"),
-     "regulador": ("skin", "selladora", "envasado")}
-
 Hs = [i for i in range(1, 9)]
 
 # Conjunto de procesos

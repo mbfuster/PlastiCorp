@@ -20,6 +20,8 @@ Q = model.addVars(J, D, vtype=GRB.CONTINUOUS,
 S = model.addVars(K, D, vtype=GRB.BINARY,
                   name="Empleado trabaja ")  # W_k_d en el modelo
 O = model.addVars(I, E, D, Hs, vtype=GRB.BINARY, name="Realiza proceso ")
+L = model.addVars(I, D, vtype=GRB.CONTINUOUS,
+                  name="Cantidad extra vendida ", lb=0)
 
 
 # Llama a update para agregar las variables al modelo
@@ -27,6 +29,13 @@ model.update()
 
 
 # Restricciones
+
+# 1. No superar presupuesto
+model.addConstr((quicksum(quicksum(quicksum(Y[m, d] * theta[m]
+                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +\
+    quicksum(Z[d] * xi for d in D) + gamma + \
+    quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
+                               for p in P)for j in J)for d in D)) <= PR)
 
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
@@ -49,7 +58,7 @@ model.addConstrs(H[i, 1] == X[i, 1] - quicksum(delta[c, i, 1] for c in C if (c, 
 
 # 3. Se prende la maquina solo si se utiliza en el dia
 
-model.addConstrs(((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I))  <= Y[m, d] * BIGM
+model.addConstrs(((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I)) <= Y[m, d] * BIGM
                   for d in D
                   for e in E
                   for m in M),  name="encender maquina")
@@ -139,19 +148,27 @@ model.addConstrs((X[i, d1] <= quicksum(quicksum(O[i, "envasado", d, h] for d in 
                   for d1 in D
                   for i in I), name="ciclo trabajo")
 
-# # 11. Se produce un tipo de producto por maquina a la vez
+# 11. Se produce un tipo de producto por maquina a la vez
+
 model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
-for i in I) <= 1 for m in M for d in D for h in Hs for e in E)
+                          for i in I) <= 1 for m in M for d in D for h in Hs for e in E)
+
+# 12. Relacion entre las variables. Deficion de venta por exceso
+
+model.addConstrs(L[i, d] == X[i, d] + H[i, d] - quicksum(delta[c, i, d] for c in C)
+                 for d in D
+                 for i in I)
 
 
 # Funcion Objetivo
-obj = quicksum(quicksum(quicksum(Y[m, d] * theta[m]
+obj = (quicksum(quicksum( quicksum( delta[c,i,d] * eta[i] for c in C)+ (1-r[i])*eta[i]*L[i,d] for i in I) for d in D) )-\
+(quicksum(quicksum(quicksum(Y[m, d] * theta[m]
                                  for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +\
     quicksum(Z[d] * xi for d in D) + gamma + \
     quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
-                               for p in P)for j in J)for d in D)
+                               for p in P)for j in J)for d in D))
 
-model.setObjective(obj, GRB.MINIMIZE)
+model.setObjective(obj, GRB.MAXIMIZE)
 
 # Optimizar
 model.optimize()
