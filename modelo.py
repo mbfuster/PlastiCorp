@@ -28,14 +28,6 @@ model.update()
 
 # Restricciones
 
-# 1. No superar presupuesto
-model.addConstr(quicksum(quicksum(quicksum(Y[m, d] * theta[m]
-                                           for m in M) for h in Hs)for d in D)
-                + quicksum(quicksum(S[k, d] for k in K)for d in D) +
-                quicksum(Z[d] * xi for d in D) + gamma +
-                quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d] for p in P)
-                                  for j in J)for d in D) <= PR, "presupuesto")
-
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
 
@@ -47,6 +39,7 @@ model.addConstrs((X[i, d] + H[i, d] >= quicksum(delta[c, i, d] for c in C if (c,
 model.addConstrs((X["regulador", d] + H["regulador", d] == quicksum(delta[c, "regulador", d] for c in C if (c, i, d) in delta)
                   for d in D
                   ), name="demanda")
+
 model.addConstrs(H[i, d] == X[i, d] + H[i, d - 1] - quicksum(delta[c, i, d] for c in C if (c, i, d) in delta)
                  for d in D[1:]
                  for i in I)
@@ -69,7 +62,7 @@ model.addConstrs((quicksum(MP[i, j] * X[i, 1] for i in I) <=
                   quicksum(F[j, p, 1] for p in P)
                   for j in J), name="compra materia prima")
 # Otros dias
-model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I if i in MP) <= quicksum(F[j, p, d] for p in P) + Q[j, d - 1]
+model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I) <= quicksum(F[j, p, d] for p in P) + Q[j, d - 1]
                   for j in J
                   for d in D[1:]), name="compra materia prima")
 

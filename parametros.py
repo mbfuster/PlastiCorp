@@ -4,7 +4,7 @@ from collections import defaultdict
 from conjuntos import *
 
 # Capacidad de la bodega
-CB = pow(10, 6)
+CB = 475
 
 # Trabajadores por maquina
 W = {"skin": 1, "troqueladora": 2, "selladora": 2}
@@ -40,6 +40,12 @@ delta = {("imp", "skin", 1): 1412, ("Imp", "skin", 2): 897,
          ("ball", "electronico", 1): 420, ("ball", "electronico", 16): 637,
          ("ball", "electronico", 18): 986}
 
+for c in C:
+    for i in I:
+        for d in D:
+            if (c,i,d) not in delta:
+                delta[c,i,d] = 0
+
 
 # Costo arriendo
 gamma = 800000
@@ -70,7 +76,7 @@ v = {"flexible 150": 0.00014364, "rigido 150": 0.000216, "rigido 200": 0.0004}
 # Materia prima por producto en unidades de plancha de plastico
 MP = {("blister", "rigido 200"): 0.066667,
       ("skin", "flexible 150"): 0.0833,
-      ("electonico", "rigido 150"): 1.66667}
+      ("electronico", "rigido 150"): 1.66667}
 
 for i in I:
     for j in J:
