@@ -4,7 +4,6 @@ from collections import defaultdict
 from conjuntos import *
 
 # Capacidad de la bodega
-#CB = 475
 CB = pow(10, 6)
 
 # Trabajadores por maquina
@@ -41,12 +40,13 @@ delta = {("imp", "skin", 1): 1412, ("Imp", "skin", 2): 897,
          ("ball", "electronico", 1): 420, ("ball", "electronico", 16): 637,
          ("ball", "electronico", 18): 986}
 
+
 # Costo arriendo
 gamma = 800000
 
 # Costos proveedores
-sigma = {"pv1": {"flexible 150mm": 101, "rigido 150mm": 205, "rigido 200mm": 300},
-         "pv2": {"flexible 150mm": 105, "rigido 150mm": 200, "rigido 200mm": 301}
+sigma = {"pv1": {"flexible 150": 101, "rigido 150": 205, "rigido 200": 300},
+         "pv2": {"flexible 150": 105, "rigido 150": 200, "rigido 200": 301}
          }
 
 # Volumen desechado
@@ -58,7 +58,7 @@ theta = {"skin": 84964, "troqueladora": 60525, "selladora": 70960}
 # Precio venta productos
 eta = {"skin": 178, "blister": 306, "electronico": 450, "regulador": 200}
 # Costo extraccion basura
-xi = 60000
+xi = 475
 
 # Volumen producto
 V = {"skin": 0.000045, "blister": 0.0001, "electronico": 0.0052,

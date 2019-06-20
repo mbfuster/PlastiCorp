@@ -55,15 +55,11 @@ model.addConstrs(H[i, 1] == X[i, 1] - quicksum(delta[c, i, 1] for c in C if (c, 
                  for i in I)
 
 # 3. Se prende la maquina solo si se utiliza en el dia
-# model.addConstrs((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I) >= Y[m, d]
-#                   for d in D
-#                   for e in E
-#                   for m in M),  name="encender maquina")
 
-# model.addConstrs(((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I)) / BIGM <= Y[m, d]
-#                   for d in D
-#                   for e in E
-#                   for m in M),  name="encender maquina")
+model.addConstrs(((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for i in I))  <= Y[m, d] * BIGM
+                  for d in D
+                  for e in E
+                  for m in M),  name="encender maquina")
 
 # 4. La cantidad de materia prima j a comprar en período d debe ser igual o
 # mayor a lo que se requiere
@@ -127,9 +123,10 @@ model.addConstr((
 
 
 # 9. Cantidad de trabajadores minima por máquina
-model.addConstrs((quicksum(Y[m, d]for m in M)
+model.addConstrs((quicksum(Y[m, d]for m in M) * W[m]
                   <= quicksum(S[k, d] for k in K)
-                  for d in D), name="trabajadores por maquina")
+                  for d in D
+                  for m in M), name="trabajadores por maquina")
 
 # 10. Ciclo de trabajo
 model.addConstrs((quicksum(quicksum(O[i, e1, d, h] for d in D[:d1])
@@ -150,8 +147,8 @@ model.addConstrs((X[i, d1] <= quicksum(quicksum(O[i, "envasado", d, h] for d in 
                   for i in I), name="ciclo trabajo")
 
 # # 11. Se produce un tipo de producto por maquina a la vez
-# model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
-# for i in I) <= 1 for m in M for d in D for h in Hs for e in E)
+model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
+for i in I) <= 1 for m in M for d in D for h in Hs for e in E)
 
 
 # Funcion Objetivo
@@ -167,8 +164,8 @@ model.setObjective(obj, GRB.MINIMIZE)
 model.optimize()
 
 # Imprimir resultado
-# with open("output.txt", "w") as file:
-#     for v in model.getVars():
-#         file.write("%s %g\n" % (v.varName, v.x))
+with open("output.txt", "w") as file:
+    for v in model.getVars():
+        file.write("%s %g\n" % (v.varName, v.x))
 
 model.printAttr("X")
