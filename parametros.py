@@ -127,4 +127,4 @@ for i in I:
             if not (i, e, m) in U:
                 U[i, e, m] = 0
 
-r = {"blister": 0.1, "skin": 0.2, "electronico": 0.4, "regulador": 0}
+r = {"blister": 0.6, "skin": 0.8, "electronico": 0.4, "regulador": 1}

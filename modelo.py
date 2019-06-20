@@ -31,11 +31,11 @@ model.update()
 # Restricciones
 
 # 1. No superar presupuesto
-model.addConstr((quicksum(quicksum(quicksum(Y[m, d] * theta[m]
-                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +\
-    quicksum(Z[d] * xi for d in D) + gamma + \
-    quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
-                               for p in P)for j in J)for d in D)) <= PR)
+model.addConstr((quicksum(quicksum(Y[m, d] * theta[m]
+                                   for m in M) for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +
+                 quicksum(Z[d] * xi for d in D) + gamma +
+                 quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
+                                            for p in P)for j in J)for d in D)) <= PR)
 
 # 2. Satisfaccion demanda y conservacion de flujo
 # Primer dia
@@ -153,7 +153,12 @@ model.addConstrs((X[i, d1] <= quicksum(quicksum(O[i, "envasado", d, h] for d in 
 model.addConstrs(quicksum(O[i, e, d, h] * U[i, e, m]
                           for i in I) <= 1 for m in M for d in D for h in Hs for e in E)
 
-# 12. Relacion entre las variables. Deficion de venta por exceso
+# 12. Maximo de unidades extra
+
+model.addConstrs(quicksum(L[i, d] for d in D) <= 100
+                 for i in I)
+
+# 13. Relacion entre las variables. Deficion de venta por exceso
 
 model.addConstrs(L[i, d] == X[i, d] + H[i, d] - quicksum(delta[c, i, d] for c in C)
                  for d in D
@@ -161,12 +166,12 @@ model.addConstrs(L[i, d] == X[i, d] + H[i, d] - quicksum(delta[c, i, d] for c in
 
 
 # Funcion Objetivo
-obj = (quicksum(quicksum( quicksum( delta[c,i,d] * eta[i] for c in C)+ (1-r[i])*eta[i]*L[i,d] for i in I) for d in D) )-\
-(quicksum(quicksum(quicksum(Y[m, d] * theta[m]
-                                 for m in M) for h in Hs)for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +\
-    quicksum(Z[d] * xi for d in D) + gamma + \
-    quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
-                               for p in P)for j in J)for d in D))
+obj = (quicksum(quicksum( quicksum( delta[c, i, d] * eta[i] for c in C) + (1 - r[i]) * eta[i] * L[i, d] for i in I) for d in D) ) -\
+    (quicksum(quicksum(Y[m, d] * theta[m]
+                       for m in M)for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +
+     quicksum(Z[d] * xi for d in D) + gamma +
+     quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
+                                for p in P)for j in J)for d in D))
 
 model.setObjective(obj, GRB.MAXIMIZE)
 
