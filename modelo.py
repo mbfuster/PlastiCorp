@@ -8,7 +8,7 @@ from parametros import *  # Todos los parametros de la modelacio
 # Generacion de modelo
 model = Model("Factory Planning Plasticorp")
 
-X = model.addVars(I, D, vtype=GRB.CONTINUOUS, name="Cantidad producida ", lb=0)
+X = model.addVars(I, D, vtype=GRB.INTEGER, name="Cantidad producida ", lb=0)
 Y = model.addVars(M, D, vtype=GRB.BINARY, name="Maquina encendida ")
 Z = model.addVars(D, vtype=GRB.BINARY, name="Camion recolector ")
 F = model.addVars(J, P, D, vtype=GRB.CONTINUOUS,
@@ -20,7 +20,7 @@ Q = model.addVars(J, D, vtype=GRB.CONTINUOUS,
 S = model.addVars(K, D, vtype=GRB.BINARY,
                   name="Empleado trabaja ")  # W_k_d en el modelo
 O = model.addVars(I, E, D, Hs, vtype=GRB.BINARY, name="Realiza proceso ")
-L = model.addVars(I, D, vtype=GRB.CONTINUOUS,
+L = model.addVars(I, D, vtype=GRB.INTEGER,
                   name="Cantidad extra vendida ", lb=0)
 
 
@@ -49,11 +49,11 @@ model.addConstrs((X["regulador", d] + H["regulador", d] == quicksum(delta[c, "re
                   for d in D
                   ), name="demanda")
 
-model.addConstrs(H[i, d] == X[i, d] + H[i, d - 1] - quicksum(delta[c, i, d] for c in C if (c, i, d) in delta)
+model.addConstrs(H[i, d] == X[i, d] + H[i, d - 1] - quicksum(delta[c, i, d] for c in C if (c, i, d) in delta) - L[i, d]
                  for d in D[1:]
                  for i in I)
 
-model.addConstrs(H[i, 1] == X[i, 1] - quicksum(delta[c, i, 1] for c in C if (c, i, 1) in delta)
+model.addConstrs(H[i, 1] == X[i, 1] - quicksum(delta[c, i, 1] for c in C if (c, i, 1) in delta) - L[i, 1]
                  for i in I)
 
 # 3. Se prende la maquina solo si se utiliza en el dia
@@ -66,14 +66,9 @@ model.addConstrs(((quicksum(quicksum(O[i, e, d, h] * U[i, e, m] for h in Hs) for
 # 4. La cantidad de materia prima j a comprar en período d debe ser igual o
 # mayor a lo que se requiere
 
-# Primer dia
-model.addConstrs((quicksum(MP[i, j] * X[i, 1] for i in I) <=
-                  quicksum(F[j, p, 1] for p in P)
-                  for j in J), name="compra materia prima")
-# Otros dias
-model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I) <= quicksum(F[j, p, d] for p in P) + Q[j, d - 1]
+model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I) <= quicksum(F[j, p, d] for p in P) + Q[j, d]
                   for j in J
-                  for d in D[1:]), name="compra materia prima")
+                  for d in D), name="compra materia prima")
 
 # Flujo bodega materia prima
 model.addConstrs((Q[j, 1] == quicksum(F[j, p, 1] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I)
@@ -160,10 +155,17 @@ model.addConstrs(quicksum(L[i, d] for d in D) <= 100
 
 # 13. Relacion entre las variables. Deficion de venta por exceso
 
-model.addConstrs(L[i, d] == X[i, d] + H[i, d] - quicksum(delta[c, i, d] for c in C)
+model.addConstrs(L[i, d] <= X[i, d] + H[i, d] - quicksum(delta[c, i, d] for c in C)
                  for d in D
                  for i in I)
 
+# # 14. Minimo dias trabajador en el mes
+model.addConstrs(quicksum(S[k, d] for d in D) >= 5
+                 for k in K)
+
+# 15. Maximo unidades diarias por trabajador
+model.addConstrs(quicksum(S[k, d] for k in K) * 350 >= quicksum(X[i, d] for i in I)
+                 for d in D)
 
 # Funcion Objetivo
 obj = (quicksum(quicksum( quicksum( delta[c, i, d] * eta[i] for c in C) + (1 - r[i]) * eta[i] * L[i, d] for i in I) for d in D) ) -\
