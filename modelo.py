@@ -73,7 +73,7 @@ model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I) <= quicksum(F[j, p, d]
 
 model.addConstrs(F[j, p, d] <= R[j, p, d]*BIGM for j in J for p in P for d in D)
 model.addConstrs(R[j, p, d] <= F[j, p, d] for j in J for p in P for d in D)
-model.addConstrs(F[j, p, d] >= 101*R[j, p, d] for j in J for p in P for d in D)
+model.addConstrs(F[j, p, d] >= cm[p,j]*R[j, p, d] for j in J for p in P for d in D)
 
 # Flujo bodega materia prima
 model.addConstrs((Q[j, 1] == quicksum(F[j, p, 1] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I)

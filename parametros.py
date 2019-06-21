@@ -90,6 +90,11 @@ mu = {"pv1": {"rigido 200": 300, "rigido 150": 205, "flexible 150": 101},
 # Presupuesto inicial
 PR = 4000000
 
+#Compra minima que establece el proveedor p para el material j
+cm = {("pv1","rigido 200"):100, ("pv1","rigido 150"):100, ("pv1","flexible 150"):100,
+      ("pv2","rigido 200"):100, ("pv2","rigido 150"):100, ("pv1","flexible 150"):100
+}
+
 A = {("blister", "skin"): (),
      ("blister", "troqueladora"): ("skin",),
      ("blister", "selladora"): ("skin", "troqueladora"),
