@@ -11,8 +11,9 @@ model = Model("Factory Planning Plasticorp")
 X = model.addVars(I, D, vtype=GRB.INTEGER, name="Cantidad producida ", lb=0)
 Y = model.addVars(M, D, vtype=GRB.BINARY, name="Maquina encendida ")
 Z = model.addVars(D, vtype=GRB.BINARY, name="Camion recolector ")
-F = model.addVars(J, P, D, vtype=GRB.CONTINUOUS,
+F = model.addVars(J, P, D, vtype=GRB.INTEGER,
                   name="Compra materia prima ", lb=0)
+R = model.addVars(J, P, D, vtype=GRB.BINARY, name="decision de compra", lb=0)
 H = model.addVars(I, D, vtype=GRB.CONTINUOUS,
                   name="Cantidad producto bodega ", lb=0)
 Q = model.addVars(J, D, vtype=GRB.CONTINUOUS,
@@ -70,6 +71,10 @@ model.addConstrs((quicksum(MP[i, j] * X[i, d] for i in I) <= quicksum(F[j, p, d]
                   for j in J
                   for d in D), name="compra materia prima")
 
+model.addConstrs(F[j, p, d] <= R[j, p, d]*BIGM for j in J for p in P for d in D)
+model.addConstrs(R[j, p, d] <= F[j, p, d] for j in J for p in P for d in D)
+model.addConstrs(F[j, p, d] >= 101*R[j, p, d] for j in J for p in P for d in D)
+
 # Flujo bodega materia prima
 model.addConstrs((Q[j, 1] == quicksum(F[j, p, 1] for p in P) - quicksum(MP[i, j] * X[i, 1] for i in I)
                   for j in J), name="inventario")
@@ -93,16 +98,16 @@ model.addConstrs((beta * quicksum(X["electronico", d] for d in range(1, d1))
 # 7. Minimo trabajadores nacionales
 model.addConstr((
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[:6])
-    >= 2), name="tabajadores chilenos")
+    >= 2), name="trabajadores chilenos")
 model.addConstr((
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[6:11])
-    >= 2), name="tabajadores chilenos")
+    >= 2), name="trabajadores chilenos")
 model.addConstr((
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[11:16])
-    >= 2), name="tabajadores chilenos")
+    >= 2), name="trabajadores chilenos")
 model.addConstr((
     quicksum(quicksum(S[k, d] * t[k]['chileno'] for k in K) for d in D[16:])
-    >= 2), name="tabajadores chilenos")
+    >= 2), name="trabajadores chilenos")
 
 # 8. Minimo trabajadoras mujeres
 model.addConstr((
@@ -168,13 +173,13 @@ model.addConstrs(quicksum(S[k, d] for k in K) * 350 >= quicksum(X[i, d] for i in
                  for d in D)
 
 # Funcion Objetivo
-obj = (quicksum(quicksum( quicksum( delta[c, i, d] * eta[i] for c in C) + (1 - r[i]) * eta[i] * L[i, d] for i in I) for d in D) ) -\
+obj = (quicksum(quicksum(quicksum(delta[c, i, d] * eta[i] for c in C) + (1 - r[i]) * eta[i] * L[i, d] for i in I) for d in D)) -\
     (quicksum(quicksum(Y[m, d] * theta[m]
                        for m in M)for d in D) + quicksum(quicksum(S[k, d] * t[k]['sueldo'] for k in K)for d in D) +
      quicksum(Z[d] * xi for d in D) + gamma +
      quicksum(quicksum(quicksum(mu[p][j] * F[j, p, d]
                                 for p in P)for j in J)for d in D))
-
+model.params.MIPGap = 0.02
 model.setObjective(obj, GRB.MAXIMIZE)
 
 # Optimizar
